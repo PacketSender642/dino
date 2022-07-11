@@ -1,0 +1,274 @@
+##[[
+cinclude 'limine.h'
+
+]]
+global __fsid_t: type <cimport,nodecl> = @record{
+  __val: [2]cint
+}
+global __timer_t: type = @pointer
+global __caddr_t: type = @cstring
+global limine_uuid: type <cimport,nodecl,ctypedef> = @record{
+  a: uint32,
+  b: uint16,
+  c: uint16,
+  d: [8]uint8
+}
+global limine_file: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  address: pointer,
+  size: uint64,
+  path: cstring,
+  cmdline: cstring,
+  media_type: uint32,
+  unused: uint32,
+  tftp_ip: uint32,
+  tftp_port: uint32,
+  partition_index: uint32,
+  mbr_disk_id: uint32,
+  gpt_disk_uuid: limine_uuid,
+  gpt_part_uuid: limine_uuid,
+  part_uuid: limine_uuid
+}
+global limine_bootloader_info_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  name: cstring,
+  version: cstring
+}
+global limine_bootloader_info_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_bootloader_info_response
+}
+global limine_stack_size_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64
+}
+global limine_stack_size_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_stack_size_response,
+  stack_size: uint64
+}
+global limine_hhdm_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  offset: uint64
+}
+global limine_hhdm_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_hhdm_response
+}
+global limine_framebuffer: type <cimport,nodecl,ctypedef> = @record{
+  address: pointer,
+  width: uint64,
+  height: uint64,
+  pitch: uint64,
+  bpp: uint16,
+  memory_model: uint8,
+  red_mask_size: uint8,
+  red_mask_shift: uint8,
+  green_mask_size: uint8,
+  green_mask_shift: uint8,
+  blue_mask_size: uint8,
+  blue_mask_shift: uint8,
+  unused: [7]uint8,
+  edid_size: uint64,
+  edid: pointer
+}
+global limine_framebuffer_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  framebuffer_count: uint64,
+  framebuffers: **limine_framebuffer
+}
+global limine_framebuffer_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_framebuffer_response
+}
+global limine_framebuffer_legacy: type <cimport,nodecl,ctypedef> = @record{
+  address: pointer,
+  width: uint16,
+  height: uint16,
+  pitch: uint16,
+  bpp: uint16,
+  memory_model: uint8,
+  red_mask_size: uint8,
+  red_mask_shift: uint8,
+  green_mask_size: uint8,
+  green_mask_shift: uint8,
+  blue_mask_size: uint8,
+  blue_mask_shift: uint8,
+  unused: uint8,
+  edid_size: uint64,
+  edid: pointer
+}
+global limine_framebuffer_legacy_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  framebuffer_count: uint64,
+  framebuffers: **limine_framebuffer_legacy
+}
+global limine_framebuffer_legacy_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_framebuffer_legacy_response
+}
+global limine_terminal: type <cimport,nodecl,forwarddecl,ctypedef> = @record{}
+global limine_terminal_write: type <cimport,nodecl> = @function(*limine_terminal, cstring, uint64): void
+global limine_terminal_callback: type <cimport,nodecl> = @function(*limine_terminal, uint64, uint64, uint64, uint64): void
+limine_terminal = @record{
+  columns: uint64,
+  rows: uint64,
+  framebuffer: *limine_framebuffer
+}
+global limine_terminal_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  terminal_count: uint64,
+  terminals: **limine_terminal,
+  write: limine_terminal_write
+}
+global limine_terminal_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_terminal_response,
+  callback: limine_terminal_callback
+}
+global limine_terminal_legacy: type <cimport,nodecl,forwarddecl,ctypedef> = @record{}
+global limine_terminal_legacy_write: type <cimport,nodecl> = @function(*limine_terminal_legacy, cstring, uint64): void
+global limine_terminal_legacy_callback: type <cimport,nodecl> = @function(*limine_terminal_legacy, uint64, uint64, uint64, uint64): void
+limine_terminal_legacy = @record{
+  columns: uint32,
+  rows: uint32,
+  framebuffer: *limine_framebuffer_legacy
+}
+global limine_terminal_legacy_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  terminal_count: uint64,
+  terminals: **limine_terminal_legacy,
+  write: limine_terminal_legacy_write
+}
+global limine_terminal_legacy_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_terminal_legacy_response,
+  callback: limine_terminal_legacy_callback
+}
+global limine_5_level_paging_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64
+}
+global limine_5_level_paging_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_5_level_paging_response
+}
+global limine_smp_info: type <cimport,nodecl,forwarddecl,ctypedef> = @record{}
+global limine_goto_address: type <cimport,nodecl> = @function(*limine_smp_info): void
+limine_smp_info = @record{
+  processor_id: uint32,
+  lapic_id: uint32,
+  reserved: uint64,
+  goto_address: limine_goto_address,
+  extra_argument: uint64
+}
+global limine_smp_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  flags: uint32,
+  bsp_lapic_id: uint32,
+  cpu_count: uint64,
+  cpus: **limine_smp_info
+}
+global limine_smp_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_smp_response,
+  flags: uint64
+}
+global limine_memmap_entry: type <cimport,nodecl,ctypedef> = @record{
+  base: uint64,
+  length: uint64,
+  type: uint64
+}
+global limine_memmap_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  entry_count: uint64,
+  entries: **limine_memmap_entry
+}
+global limine_memmap_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_memmap_response
+}
+global limine_entry_point: type <cimport,nodecl> = @function(): void
+global limine_entry_point_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64
+}
+global limine_entry_point_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_entry_point_response,
+  entry: limine_entry_point
+}
+global limine_kernel_file_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  kernel_file: *limine_file
+}
+global limine_kernel_file_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_kernel_file_response
+}
+global limine_module_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  module_count: uint64,
+  modules: **limine_file
+}
+global limine_module_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_module_response
+}
+global limine_rsdp_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  address: pointer
+}
+global limine_rsdp_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_rsdp_response
+}
+global limine_smbios_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  entry_32: pointer,
+  entry_64: pointer
+}
+global limine_smbios_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_smbios_response
+}
+global limine_efi_system_table_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  address: pointer
+}
+global limine_efi_system_table_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_efi_system_table_response
+}
+global limine_boot_time_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  boot_time: int64
+}
+global limine_boot_time_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_boot_time_response
+}
+global limine_kernel_address_response: type <cimport,nodecl,ctypedef> = @record{
+  revision: uint64,
+  physical_base: uint64,
+  virtual_base: uint64
+}
+global limine_kernel_address_request: type <cimport,nodecl,ctypedef> = @record{
+  id: [4]uint64,
+  revision: uint64,
+  response: *limine_kernel_address_response
+}

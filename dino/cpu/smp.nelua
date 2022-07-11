@@ -1,0 +1,7 @@
+require "../utils.nelua"
+require "./spinlocks.nelua"
+
+
+global core_local: type = @record{
+    coreid: integer
+}

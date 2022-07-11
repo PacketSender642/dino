@@ -1,0 +1,40 @@
+##[[
+  cflags '-target x86_64-elf'
+  cflags '-Wall -Wextra -O2 -pipe'
+  cflags '-ffreestanding'
+  cflags '-nostdlib'
+  cflags '-fno-stack-protector'
+  cflags '-fno-pic'
+  cflags '-fpie'
+  cflags '-mno-red-zone'
+  ldflags '-Wl,-Tlinker-x86_64.ld'
+  ldflags '-Wl,-zmax-page-size=0x1000'
+  ldflags '-Wl,-static'
+  ldflags '-Wl,-pie'
+  ldflags '-Wl,--no-dynamic-linker'
+  ldflags '-Wl,-ztext'
+  pragmas.nochecks = true
+  pragmas.nogc = true
+]]
+
+require './deps/limine.nelua'
+require './utils.nelua'
+require './cpu/idt.nelua'
+require './cpu/smp.nelua'
+require './requests.nelua'
+require './cpu/spinlocks.nelua'
+
+global terminal = (@*[0]*limine_terminal)(terminal_request.response.terminals)[0];
+
+local function main(): void <entrypoint>
+    -- idt > smp > pmm > vmm > scheduler --
+    local terminal = (@*[0]*limine_terminal)(terminal_request.response.terminals)[0];
+    terminal_request.response.write(terminal, "DINO  OK\n", 9);
+    terminal_request.response.write(terminal, "IDT   ", 6);
+    idt.init()
+    terminal_request.response.write(terminal, "OK\n", 3);
+    terminal_request.response.write(terminal, "CPU   ", 6);
+    terminal_request.response.write(terminal, "OK\n", 3);
+
+    infinite();
+end

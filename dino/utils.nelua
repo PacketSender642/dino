@@ -1,0 +1,16 @@
+global function infinite()
+    while true do
+        ##[[cemit'asm("hlt");']]
+    end
+end
+
+##[==[
+function asm(code, initlist)
+  for i,pair in ipairs(initlist) do
+    local regname, symname = pair[1], pair[2][1]
+    local codename = context.scope.symbols[symname].codename
+    cemit(string.format([[register long reg%d asm("%s") = (long)%s;]], i, regname, codename))
+  end
+  cemit(string.format('__asm__("%s");', code:gsub('\n','')))
+end
+]==]

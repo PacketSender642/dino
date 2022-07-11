@@ -1,0 +1,11 @@
+require './deps/limine.nelua'
+
+global terminal_request: limine_terminal_request <ctopinit, volatile> = {
+    id = { 0xc7b1dd30df4c8b88, 0x0a82e883a194f07b, 0xc8ac59310c2b0844, 0xa68d0c7265d38878 },
+    revision = 0
+};
+
+global mmap_request: limine_memmap_request <ctopinit, volatile> = {
+    id = { 0xc7b1dd30df4c8b88, 0x0a82e883a194f07b, 0xc8ac59310c2b0844, 0xa68d0c7265d38878 },
+    revision = 0
+};

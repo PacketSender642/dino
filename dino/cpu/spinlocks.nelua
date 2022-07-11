@@ -1,0 +1,17 @@
+require "../utils.nelua"
+require "./smp.nelua"
+
+global function __sync_synchronize() <cimport> end
+
+global function __sync_bool_compare_and_swap(ptr: any, oldval: any, newval: any): boolean <cimport> end
+
+local l: integer
+
+global function lock(core: integer)
+    while (not __sync_bool_compare_and_swap(&l, 0, core + 1)) do end
+    __sync_synchronize();
+end
+
+global function release()
+    __sync_synchronize();
+end

@@ -1,0 +1,39 @@
+require '../utils.nelua'
+
+global idt = @record{}
+
+local idt_ptr = @record{
+	size:    integer,
+	address: *void,
+}
+
+local idt_entry = @record{
+	offset_low: integer,
+	selector:   integer,
+	ist:        integer,
+	flags:      integer,
+	offset_mid: integer,
+	offset_hi:  integer,
+	reserved:   integer,
+}
+
+global idt_pointer: idt_ptr
+global idt_entries: [256]idt_entry
+
+function idt.init()
+    idt_pointer = idt_ptr{
+		size = 256,
+		address = &idt_entries
+	}
+
+    ##[[cemit'asm("lidt %0" : "=m" (cpu_idt_nelua_idt_pointer));']]
+end
+
+function idt.add_handler(fn: function(one: integer, two: integer): integer, num: integer, type: integer, dpl: integer)
+    idt_pointer = idt_ptr{
+		size = 256,
+		address = &idt_entries
+	}
+
+    ##[[cemit'asm("lidt %0" : "=m" (cpu_idt_nelua_idt_pointer));']]
+end
