@@ -31,7 +31,7 @@ local function main(): void <entrypoint>
     local terminal = (@*[0]*limine_terminal)(terminal_request.response.terminals)[0];
     print("DINO \n");
     idt.init()
-    terminal_request.response.write(terminal, "IDT\n", 3);
+    print("IDT\n");
 
     infinite();
 end
