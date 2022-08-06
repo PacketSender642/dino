@@ -29,12 +29,9 @@ global terminal = (@*[0]*limine_terminal)(terminal_request.response.terminals)[0
 local function main(): void <entrypoint>
     -- idt > smp > pmm > vmm > scheduler --
     local terminal = (@*[0]*limine_terminal)(terminal_request.response.terminals)[0];
-    terminal_request.response.write(terminal, "DINO  OK\n", 9);
-    terminal_request.response.write(terminal, "IDT   ", 6);
+    print("DINO \n");
     idt.init()
-    terminal_request.response.write(terminal, "OK\n", 3);
-    terminal_request.response.write(terminal, "CPU   ", 6);
-    terminal_request.response.write(terminal, "OK\n", 3);
+    terminal_request.response.write(terminal, "IDT\n", 3);
 
     infinite();
 end

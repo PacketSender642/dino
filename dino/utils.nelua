@@ -1,7 +1,9 @@
+require './requests.nelua'
+
 global function infinite()
-    while true do
-        ##[[cemit'asm("hlt");']]
-    end
+  while true do
+    ##[[cemit'asm("hlt");']]
+  end
 end
 
 ##[==[
@@ -14,3 +16,17 @@ function asm(code, initlist)
   cemit(string.format('__asm__("%s");', code:gsub('\n','')))
 end
 ]==]
+
+global function strlen(str: string): uint64
+  local s: uint64
+
+  for i = 0,#str do
+    s = 1 + s
+  end
+  return s;
+end
+
+global function print(...: varargs)
+  local terminal = (@*[0]*limine_terminal)(terminal_request.response.terminals)[0];
+  terminal_request.response.write(terminal, ..., strlen(...));
+end
